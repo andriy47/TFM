@@ -1,13 +1,19 @@
 
 import json
 import nltk
+import pandas as pd
+import re
+import matplotlib.pyplot as plt 
+import gensim
+
 # nltk.download('stopwords')
 from nltk.corpus import stopwords
 from datetime import datetime
 from textblob import TextBlob 
-import pandas as pd
-import re
-import matplotlib.pyplot as plt 
+from nltk.tokenize import RegexpTokenizer
+from stop_words import get_stop_words
+from nltk.stem.porter import PorterStemmer
+from gensim import corpora, models
 
 redexUrl = re.compile(r'^https?:\/\/.*[\r\n]*')
 
@@ -33,8 +39,6 @@ def GraficarDatos(numeros_list,popularidad_list,numero):
     axes.set_ylim([-1, 2]) 
     
     plt.scatter(numeros_list, popularidad_list)
-    print sum(popularidad_list)
-    print len(popularidad_list)
 
     popularidadPromedio = (sum(popularidad_list))/(len(popularidad_list))
     popularidadPromedio = "{0:.0f}%".format(popularidadPromedio * 100)
@@ -52,7 +56,6 @@ def GraficarDatos(numeros_list,popularidad_list,numero):
     plt.show()
 
 
-# def readAndAnalisData(stateDict):
 data = dict()
 idTwit = ''
 for cadaTwit in stateDict:
@@ -70,6 +73,7 @@ for cadaTwit in stateDict:
             for palabra in twit:
                 matchUrl = redexUrl.match(palabra)
                 try:
+                    # STOP_WORDS
                     if unicode(palabra) in stopwords.words('english'):
                         clean_tokens.remove(palabra)
                     if matchUrl:
@@ -82,7 +86,56 @@ for cadaTwit in stateDict:
             else :
                 data[idTwit] = clean_tokens
 
-GraficarDatos(numeros_list,popularidad_list,numero)
+# GraficarDatos(numeros_list,popularidad_list,numero) 
+
+datDf = {key:pd.Series(val) for key,val in data.iteritems()}
+# Panda
+merged = pd.DataFrame(datDf)
+
+tokenizer = RegexpTokenizer(r'\w+')
+
+# create English stop words list
+en_stop = get_stop_words('en')
+
+# Create p_stemmer of class PorterStemmer
+p_stemmer = PorterStemmer()
+     
+# compile sample documents into a list
+doc_set = [' '.join(val) for key,val in data.iteritems()]
+
+# list for tokenized documents in loop
+texts = []
+
+# loop through document list
+for i in doc_set:
+    
+    # clean and tokenize document string
+    raw = i.lower()
+    tokens = tokenizer.tokenize(raw)
+    
+    # remove stop words from tokens
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+    
+    # stem tokens
+    stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
+    
+    # add tokens to list
+    texts.append(stemmed_tokens)
+
+# turn our tokenized documents into a id <-> term dictionary
+dictionary = corpora.Dictionary(texts)
+    
+# convert tokenized documents into a document-term matrix
+corpus = [dictionary.doc2bow(text) for text in texts]
+
+ 
+# generate LDA model
+ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=3, id2word = dictionary, passes=20)
+
+print ldamodel.print_topics(2)
+
+
+
 
 
 
