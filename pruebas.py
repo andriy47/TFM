@@ -1,12 +1,38 @@
 
+import numpy as np
+from pprint import pprint
+
+# Gensim
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+
+# spacy for lemmatization
+import spacy
+
+# Plotting tools 
+import pyLDAvis
+import pyLDAvis.gensim  # don't skip this
+import matplotlib.pyplot as plt
+'%matplotlib inline'
+
+# Enable logging for gensim - optional
+import logging
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
+
+import warnings
+warnings.filterwarnings("ignore",category=DeprecationWarning)
+
+ 
 import json
 import nltk
 import pandas as pd
 import re
 import matplotlib.pyplot as plt 
 import gensim
-from gensim import corpora, models
-# nltk.download('stopwords')
+
+nltk.download('stopwords')
 from string import punctuation
 from nltk.corpus import stopwords
 from datetime import datetime
@@ -20,8 +46,6 @@ from nltk.tokenize import TweetTokenizer
 
 redexUrl = re.compile(r'^https?:\/\/.*[\r\n]*')
 
-stateDict = json.load(open('../P1THEDEMOCRATS_2000.json'))
-
 english_stopwords = stopwords.words('english')
 
 data = []
@@ -34,7 +58,6 @@ def tweet_clean(tweet):
     print('Original tweet:', tweet, '\n')
     # Remove HTML special entities (e.g. &amp;)
     tweet_no_special_entities = re.sub(r'\&\w*;', '', tweet)
-    tweet_no_special_entities = re.sub(r'\@\w*;', '', tweet)
     print('No special entitites:', tweet_no_special_entities, '\n')
     # Remove tickers
     tweet_no_tickers = re.sub(r'\$\w*', '', tweet_no_special_entities)
@@ -73,102 +96,52 @@ def tweet_clean(tweet):
     tweet_filtered =' '.join(list_no_stopwords)
     print('Final tweet:', tweet_filtered)
     return(tweet_filtered)
-n = 0
-def sentimentalAnalis(twitText):
-    global numero, popularidad_list, numeros_list, n
-    # if numero <= 2000:
-    analisis = TextBlob(twitText)
-    popularidad = analisis.sentiment
-    popularidad = popularidad.polarity
-    popularidad_list.append(popularidad)
-    numeros_list.append(numero)
-    n = n+1
-    print n
-    numero = numero + 1 
 
 
-def GraficarDatos(numeros_list,popularidad_list,numero):
-    axes = plt.gca()
-    axes.set_ylim([-1, 2]) 
-    
-    plt.scatter(numeros_list, popularidad_list)
+def clean_data_from_json(file):
+    # Load the first sheet of the JSON file into a data frame
+    df = pd.read_json(file, orient='columns')
+    data = df['text'].tolist()
+    l = []
+    for tweet in data:
+        s = tweet_clean(tweet)
+        print(s)
+        l.append(s)
+    return(l)
 
-    popularidadPromedio = (sum(popularidad_list))/(len(popularidad_list))
-    popularidadPromedio = "{0:.0f}%".format(popularidadPromedio * 100)
-    time  = datetime.now().strftime("")
-    # time  = datetime.now().strftime("A : %H:%M\n El: %m-%d-%y")
-    plt.text(0, 1.25, 
-             "Sentimiento promedio:  " + str(popularidadPromedio) + "\n" + time, 
-             fontsize=12, 
-             bbox = dict(facecolor='none', 
-                         edgecolor='black', 
-                         boxstyle='square, pad = 1'))
-    
-    plt.title("Sentimientos sobre P1THEDEMOCRATS_2000 en twitter")
-    plt.xlabel("Numero de tweets")
-    plt.ylabel("Sentimiento")
-    plt.show()
+data = clean_data_from_json('../P1THEDEMOCRATS_2000.json')
 
-def ldaMethod(data):
-    tokenizer = RegexpTokenizer(r'\w+')
-
-    # Create p_stemmer of class PorterStemmer
-    p_stemmer = PorterStemmer()
-
-
-    # list for tokenized twiits in loop
-    texts = []
-    print data
-    for i in data:
-
-        raw = i.lower()
-        tokens = tokenizer.tokenize(raw)
-        print raw
-        print tokens
-        # stem tokens
-        stemmed_tokens = [p_stemmer.stem(word) for word in tokens]
-        
-        # add tokens to list
-        texts.append(stemmed_tokens)
-
-    # twit tokenizado en documento 
-    dictionary = corpora.Dictionary(texts)
-    print "Dicctonari"
-    print dictionary    
-
-
-    #token en document-termino matriz
-    corpus = [dictionary.doc2bow(text) for text in texts]
-
-    
-    # Generacion LDA
-    ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=5, id2word = dictionary, passes=20)
-
-    print ldamodel.print_topics(5)
-
-
-def start(documento):
-    global data
-    for cadaTwit in stateDict:
-        for key, val in cadaTwit.iteritems(): 
-            if 'text' in key:
-                clear_twit = tweet_clean(val)
-                data.append(clear_twit)
-                sentimentalAnalis(clear_twit)
+# def start(documento):
+#     global data
+#     for cadaTwit in stateDict:
+#         for key, val in cadaTwit.iteritems(): 
+#             if 'text' in key:
+#                 clear_twit = tweet_clean(val)
+#                 data.append(clear_twit)
+#                 # sentimentalAnalis(clear_twit)
 
 # Start 
-print "Sentimental Analysis Start:"
-start(stateDict)
+# print "Sentimental Analysis Start:"
+# start(stateDict)
+print "\n"
 print "Sentimental Analysis DONE:"
 
+
+def sent_to_words(sentences):
+    for sentence in sentences:
+        yield(gensim.utils.simple_preprocess(str(sentence), deacc=True))  # deacc=True removes punctuations
+
+data_words = list(sent_to_words(data))
+
+print(data_words[:1])
 
 #Dibujar grafica 
 # GraficarDatos(numeros_list,popularidad_list,numero) 
 
 # LDA
-print "LDA START:"
-ldaMethod(data)
-print "LDA DONE:"
+# print "LDA START:"
+# ldaMethod(data)
+# print "LDA DONE:"
 
 
 
