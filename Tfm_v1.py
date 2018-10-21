@@ -15,7 +15,11 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer as Vectorizer
 from nltk  import TweetTokenizer
-from gensim.models import HdpModel
+from gensim.models import CoherenceModel 
+from gensim.test.utils import common_corpus, common_dictionary
+
+import pyLDAvis
+import matplotlib.pyplot as plt
 # nltk.download('stopwords')
 
 
@@ -97,7 +101,7 @@ def tweet_clean(tweet):
 
 def sentimentalAnalis(twitText):
     global numero, popularidad_list, numeros_list
-    if numero <= 3:
+    if numero <= 20:
         analisis = TextBlob(twitText)
         analisis = analisis.correct()
         popularidad = analisis.sentiment
@@ -138,7 +142,7 @@ def ldaMethod(data,topics ):
     p_stemmer = PorterStemmer()
 
     # list for tokenized twiits in loop
-    texts = []
+    palabras = []
     for i in data:
         raw = i.lower()
         tokens = tokenizer.tokenize(raw)
@@ -146,31 +150,38 @@ def ldaMethod(data,topics ):
         stemmed_tokens = [p_stemmer.stem(word) for word in tokens]
         
         # add tokens to list
-        texts.append(stemmed_tokens)
+        palabras.append(stemmed_tokens)
 
     # twit tokenizado en documento 
-    dictionary = corpora.Dictionary(texts)
+    dictionary = corpora.Dictionary(palabras)
 
     #token en document-termino matriz
-    corpus = [dictionary.doc2bow(text) for text in texts]
+    corpus = [dictionary.doc2bow(text) for text in palabras]
     
     # Generacion LDA
     ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=topics, id2word = dictionary, passes=20)
     
     print "LDA"
     print ldamodel.print_topics(5)
+
     print "PERPLEXITY"
     print ldamodel.log_perplexity(corpus)
 
-    coherence_model_lda = HdpModel(model=ldamodel, texts=data_lemmatized, dictionary=dictionary, coherence='c_v')
+    coherence_model_lda = CoherenceModel(model=ldamodel, texts=palabras, dictionary=dictionary, coherence='c_v')
     coherence_lda = coherence_model_lda.get_coherence()
-    print('\nCoherence Score: ', coherence_lda)
 
+    print "COHERENCE:" 
+    print coherence_lda
+
+    # Visualize the topics
+    # pyLDAvis.enable_notebook()
+    # vis = pyLDAvis.gensim.prepare(ldamodel, corpus, dictionary)
+    # vis
+    
 
 def hlda(corpus, dictionary, topic, probably_words):
-    hlda = HdpModel(corpus, dictionary)
-    #pintame 15 topic con 5 palabras mas probables
-    topic_info = hlda.print_topics(num_topics=topic, num_words=probably_words)
+    hldas = CoherenceModel(corpus, dictionary)
+    topic_info = hldas.print_topics(num_topics=topic, num_words=probably_words)
     print topic_info
 
 def start(documento):
@@ -193,17 +204,22 @@ print "Sentimental Analysis DONE:"
 print "<------------------------------------------->"
 
 # LDA
-print "LDA START:"
+print "LDA & HLDA START:"
+#ldaMethod(Twits , Numero de Opics)
 ldaMethod(data, 5)
-print "LDA DONE:"
+print "LDA + HLDA DONE:"
 
-print "<------------------------------------------->"
-#HLDA
+# print "<------------------------------------------->"
 print "HLDA START:"
-hlda(corpus, dictionary, 15, 5)
+# def hlda(token en document-termino matriz, dictionary(seed), num_topics, most_probably_words):
+
+# print "LALALALA"
+# print dictionary
+# hlda(common_corpus, common_dictionary, 3, 2)
 print "HLDA DONE:"
 
-# coherencia_modelo_lda = HdpModel(model=ldaMethod(data, 5), )
+
+# coherencia_modelo_lda = CoherenceModel(model=ldaMethod(data, 5), )
 
 
 
@@ -218,3 +234,10 @@ print "HLDA DONE:"
 
 #TextBlob
 #Spelling Correction
+
+#Acumulador en TEXTBLOB intervalos de sentimientos
+#LDA jerarquico HLDA
+#hdqp
+#URL extraer 
+#Red follower 
+#NetworkX
