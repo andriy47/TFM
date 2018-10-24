@@ -9,7 +9,7 @@ from gensim import corpora, models
 from string import punctuation
 from nltk.corpus import stopwords
 from datetime import datetime
-from textblob import TextBlob 
+from textblob import TextBlob  
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
@@ -17,9 +17,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer as Vectorizer
 from nltk  import TweetTokenizer
 from gensim.models import CoherenceModel 
 from gensim.test.utils import common_corpus, common_dictionary
-
-import pyLDAvis
-import matplotlib.pyplot as plt
+from gensim.models import HdpModel
+# import pyLDAvis
+# import matplotlib.pyplot as plt
 # nltk.download('stopwords')
 
 
@@ -33,12 +33,15 @@ numero = 1
 
 #Variable for LDA AND HLDA
 corpus = ""
-dictionary = ""
+elDictionary = ""
+ldaResult = ""
 
 def clean_data_from_json(file):
     # Load the first sheet of the JSON file into a data frame
     df = pd.read_json(file, orient='columns')
     print "DF"
+
+    df.to_csv('DataFrame.csv',encoding="utf-8")
     print df
     data = df['text'].tolist()
     panda = []
@@ -101,7 +104,7 @@ def tweet_clean(tweet):
 
 def sentimentalAnalis(twitText):
     global numero, popularidad_list, numeros_list
-    if numero <= 20:
+    if numero <= 100:
         analisis = TextBlob(twitText)
         analisis = analisis.correct()
         popularidad = analisis.sentiment
@@ -135,7 +138,7 @@ def GraficarDatos(numeros_list,popularidad_list,numero):
 
 
 def ldaMethod(data,topics ):
-    global corpus, dictionary
+    global corpus, elDictionary, ldaResult
     tokenizer = RegexpTokenizer(r'\w+')
 
     # Create p_stemmer of class PorterStemmer
@@ -153,25 +156,27 @@ def ldaMethod(data,topics ):
         palabras.append(stemmed_tokens)
 
     # twit tokenizado en documento 
-    dictionary = corpora.Dictionary(palabras)
+    elDictionary = corpora.Dictionary(palabras)
 
     #token en document-termino matriz
-    corpus = [dictionary.doc2bow(text) for text in palabras]
+    corpus = [elDictionary.doc2bow(text) for text in palabras]
     
     # Generacion LDA
-    ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=topics, id2word = dictionary, passes=20)
+    ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=topics, id2word = elDictionary, passes=20)
     
     print "LDA"
-    print ldamodel.print_topics(5)
+    ldaResult = ldamodel.print_topics(5)
+    print ldaResult
 
     print "PERPLEXITY"
     print ldamodel.log_perplexity(corpus)
 
-    coherence_model_lda = CoherenceModel(model=ldamodel, texts=palabras, dictionary=dictionary, coherence='c_v')
+    coherence_model_lda = CoherenceModel(model=ldamodel, texts=palabras, dictionary=elDictionary, coherence='c_v')
     coherence_lda = coherence_model_lda.get_coherence()
 
     print "COHERENCE:" 
     print coherence_lda
+    
 
     # Visualize the topics
     # pyLDAvis.enable_notebook()
@@ -179,49 +184,58 @@ def ldaMethod(data,topics ):
     # vis
     
 
-def hlda(corpus, dictionary, topic, probably_words):
-    hldas = CoherenceModel(corpus, dictionary)
-    topic_info = hldas.print_topics(num_topics=topic, num_words=probably_words)
+def hlda(corpus, eldictionary, topic, probably_words):
+    hdp = HdpModel(corpus, eldictionary)
+    topic_info = hdp.print_topics(num_topics=20, num_words=10)
     print topic_info
 
 def start(documento):
     global data
     stateDict = clean_data_from_json(documento)
+    
     for val in stateDict:
         clear_twit = tweet_clean(val)
         data.append(clear_twit)
-          
+
 # Start 
 
 print "Sentimental Analysis Start:"
 start('P1THEDEMOCRATS_2000.json')
-#Dibujar grafica 
+#Tratamiento
 for tt in data:
     sentimentalAnalis(tt)
-    
+#Dibujar grafica 
 GraficarDatos(numeros_list,popularidad_list,numero)
 print "Sentimental Analysis DONE:"
 print "<------------------------------------------->"
 
 # LDA
-print "LDA & HLDA START:"
+print "LDA START:"
 #ldaMethod(Twits , Numero de Opics)
 ldaMethod(data, 5)
-print "LDA + HLDA DONE:"
+print "LDA DONE:"
 
 # print "<------------------------------------------->"
 print "HLDA START:"
 # def hlda(token en document-termino matriz, dictionary(seed), num_topics, most_probably_words):
-
-# print "LALALALA"
-# print dictionary
-# hlda(common_corpus, common_dictionary, 3, 2)
+hlda(corpus, elDictionary, 5, 10)
 print "HLDA DONE:"
 
+probabilidad_del_topic = []
+for key,val in ldaResult:
+    val = re.findall(r'\d*\.\d*',val)
+    val = [i.encode('ascii', 'ignore') for i in val]
+    a = 0
+    for i in val:
+        a+=float(i)
+    
+    probabilidad_del_topic.append((key,a))
 
-# coherencia_modelo_lda = CoherenceModel(model=ldaMethod(data, 5), )
+print probabilidad_del_topic
 
-
+# dataInDataFrame = pd.DataFrame(probabilidad_del_topic,columns=['id','prob']).sort_values('id',ascending=False)
+# dataInDataFrame['topic'] = dataInDataFrame['id'].apply(ldaResult)
+# print dataInDataFrame
 
 
 #Twits de partidos politicos hashtag
@@ -238,6 +252,7 @@ print "HLDA DONE:"
 #Acumulador en TEXTBLOB intervalos de sentimientos
 #LDA jerarquico HLDA
 #hdqp
+#
 #URL extraer 
 #Red follower 
 #NetworkX
