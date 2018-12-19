@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key attr.name="sentiment" attr.type="double" for="edge" id="d2"/>
+<key attr.name="weight" attr.type="long" for="edge" id="d1"/>
+<key attr.name="snt" attr.type="double" for="node" id="d0"/>
+<graph edgedefault="directed"><node id="USAmediatime">
+  <data key="d0">0.0</data>
+</node>
+<node id="twcole56">
+  <data key="d0">-0.1</data>
+</node>
+<node id="vandayyt">
+  <data key="d0">0.13636363636363635</data>
+</node>
+<node id="Paez_T222">
+  <data key="d0">0.5</data>
+</node>
+<node id="alanrothdc">
+  <data key="d0">0.0</data>
+</node>
+<node id="Dhekra">
+  <data key="d0">0.0</data>
+</node>
+<node id="AllieBMason">
+  <data key="d0">0.0</data>
+</node>
+<node id="CarlosRawrrr">
+  <data key="d0">0.13636363636363635</data>
+</node>
+<node id="mattypowers">
+  <data key="d0">-0.03749999999999999</data>
+</node>
+<node id="woodringgma">
+  <data key="d0">0.0</data>
+</node>
+<node id="FoxNews">
+  <data key="d3">0</data>
+</node>
+<node id="RepGutierrez">
+  <data key="d3">0</data>
+</node>
+<node id="POTUS">
+  <data key="d3">0</data>
+</node>
+<node id="dxguy7">
+  <data key="d3">0</data>
+</node>
+<node id="justanavywife">
+  <data key="d3">0</data>
+</node>
+<node id="ChelseaClinton">
+  <data key="d3">0</data>
+</node>
+<node id="TexasArmyChris">
+  <data key="d3">0</data>
+</node>
+<node id="actionjack69">
+  <data key="d3">0</data>
+</node>
+<node id="snmrrw">
+  <data key="d3">0</data>
+</node>
+<node id="Scaramucci">
+  <data key="d3">0</data>
+</node>
+<node id="Resist0917">
+  <data key="d3">0</data>
+</node>
+<node id="realDonaldTrump">
+  <data key="d3">0</data>
+</node>
+<node id="Carbuccia">
+  <data key="d3">0</data>
+</node>
+<node id="ArmenteroDorian">
+  <data key="d3">0</data>
+</node>
+<node id="bijou1952">
+  <data key="d3">0</data>
+</node>
+<node id="slorider1816">
+  <data key="d3">0</data>
+</node>
+<node id="SenSanders">
+  <data key="d3">0</data>
+</node>
+<node id="leesa_fl">
+  <data key="d3">0</data>
+</node>
+<node id="fatherjonathan">
+  <data key="d3">0</data>
+</node>
+<node id="factsnooffense">
+  <data key="d3">0</data>
+</node>
+<edge source="USAmediatime" target="FoxNews">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="USAmediatime" target="RepGutierrez">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="USAmediatime" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="twcole56" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">-0.1</data>
+</edge>
+<edge source="vandayyt" target="dxguy7">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="vandayyt" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="Paez_T222" target="justanavywife">
+  <data key="d1">1</data>
+  <data key="d2">0.5</data>
+</edge>
+<edge source="Paez_T222" target="ChelseaClinton">
+  <data key="d1">1</data>
+  <data key="d2">0.5</data>
+</edge>
+<edge source="Paez_T222" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.5</data>
+</edge>
+<edge source="alanrothdc" target="TexasArmyChris">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="alanrothdc" target="actionjack69">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="alanrothdc" target="snmrrw">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="alanrothdc" target="Scaramucci">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="alanrothdc" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="Dhekra" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="AllieBMason" target="Resist0917">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="AllieBMason" target="realDonaldTrump">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="AllieBMason" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="CarlosRawrrr" target="Carbuccia">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="CarlosRawrrr" target="ArmenteroDorian">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="CarlosRawrrr" target="bijou1952">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="CarlosRawrrr" target="slorider1816">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="CarlosRawrrr" target="SenSanders">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="CarlosRawrrr" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.13636363636363635</data>
+</edge>
+<edge source="mattypowers" target="Scaramucci">
+  <data key="d1">1</data>
+  <data key="d2">-0.03749999999999999</data>
+</edge>
+<edge source="mattypowers" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">-0.03749999999999999</data>
+</edge>
+<edge source="woodringgma" target="leesa_fl">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="woodringgma" target="fatherjonathan">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="woodringgma" target="factsnooffense">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+<edge source="woodringgma" target="POTUS">
+  <data key="d1">1</data>
+  <data key="d2">0.0</data>
+</edge>
+</graph></graphml>
